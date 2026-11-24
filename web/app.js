@@ -61,6 +61,8 @@ const el = {
   wmVoice: $("wm-voice"),
   wmVoiceBtn: $("wm-voice-btn"),
   wmVoiceName: $("wm-voice-name"),
+  wmRepeatEvery: $("wm-repeat-every"),
+  wmRepeatCount: $("wm-repeat-count"),
 };
 
 function getApi() {
@@ -728,6 +730,8 @@ function wmState() {
     volume: parseInt(el.wmVolume.value, 10) / 100,
     effects: wmEffects(),
     voice: el.wmVoice.value === "custom" ? window.__wmVoicePath || "custom" : "tts",
+    repeat_every: parseFloat(el.wmRepeatEvery?.value) || 0,
+    repeat_count: parseInt(el.wmRepeatCount?.value, 10) || 0,
   };
 }
 
@@ -740,6 +744,12 @@ function wmApplyConfig(wm) {
   if (typeof wm.volume === "number") {
     el.wmVolume.value = String(Math.round(wm.volume * 100));
     el.wmVolumeLabel.textContent = `${Math.round(wm.volume * 100)}%`;
+  }
+  if (typeof wm.repeat_every === "number") {
+    el.wmRepeatEvery.value = String(wm.repeat_every);
+  }
+  if (typeof wm.repeat_count === "number") {
+    el.wmRepeatCount.value = String(wm.repeat_count);
   }
   const effects = wm.effects || [];
   el.wmEcho.checked = effects.includes("echo");
@@ -778,13 +788,15 @@ el.wmVolume.addEventListener("input", () => {
   scheduleSave();
 });
 
-[el.wmText, el.wmPosition, el.wmEcho, el.wmReverb, el.wmDeep, el.wmRadio, el.wmVoice].forEach((node) =>
-  node.addEventListener("change", () => {
+[el.wmText, el.wmPosition, el.wmEcho, el.wmReverb, el.wmDeep, el.wmRadio, el.wmVoice, el.wmRepeatEvery, el.wmRepeatCount].forEach((node) =>
+  node?.addEventListener("change", () => {
     wmSyncVoiceUI();
     scheduleSave();
   })
 );
 el.wmText.addEventListener("input", scheduleSave);
+el.wmRepeatEvery?.addEventListener("input", scheduleSave);
+el.wmRepeatCount?.addEventListener("input", scheduleSave);
 
 el.wmVoiceBtn.addEventListener("click", async () => {
   try {
@@ -1016,6 +1028,11 @@ function applyWebConfig(config) {
   if (formatField) formatField.hidden = false;
   const qualityField = el.quality.closest(".field");
   if (qualityField) qualityField.hidden = false;
+
+  // Mostra assinatura de áudio (servidor tem ffmpeg).
+  const wmSwitch = el.wmEnabled.closest(".switch--wide");
+  if (wmSwitch) wmSwitch.hidden = false;
+  el.wmOptions.hidden = !el.wmEnabled.checked;
 
   // Limita opções de formato ao que o servidor aceita.
   if (Array.isArray(config?.convert_formats)) {
