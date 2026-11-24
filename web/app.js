@@ -1016,7 +1016,8 @@ function applyWebConfig(config) {
   // No site: o servidor pode converter se AUDIOFLOW_ENABLE_CONVERT=1.
   // Primeiro reseta a visibilidade das opções.
   [...el.format.options].forEach((opt) => { opt.hidden = false; });
-  applyAndroidConfig(config);
+
+  // Não chama applyAndroidConfig - ele esconde o watermark.
   window.__web = true;
   document.body.classList.add("is-web");
   if (el.webNote) el.webNote.hidden = false;
@@ -1029,7 +1030,7 @@ function applyWebConfig(config) {
   const qualityField = el.quality.closest(".field");
   if (qualityField) qualityField.hidden = false;
 
-  // Mostra assinatura de áudio (servidor tem ffmpeg).
+  // Mostra assinatura de áudio (servidor tem ffmpeg + espeak-ng).
   const wmSwitch = el.wmEnabled.closest(".switch--wide");
   if (wmSwitch) wmSwitch.hidden = false;
   el.wmOptions.hidden = !el.wmEnabled.checked;
