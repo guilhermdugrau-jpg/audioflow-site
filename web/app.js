@@ -1005,6 +1005,8 @@ function applyAndroidConfig(config) {
 
 function applyWebConfig(config) {
   // No site: o servidor pode converter se AUDIOFLOW_ENABLE_CONVERT=1.
+  // Primeiro reseta a visibilidade das opções.
+  [...el.format.options].forEach((opt) => { opt.hidden = false; });
   applyAndroidConfig(config);
   window.__web = true;
   document.body.classList.add("is-web");
