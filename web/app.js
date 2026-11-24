@@ -18,7 +18,6 @@ const el = {
   settingsCard: $("settings-card"),
   format: $("format"),
   quality: $("quality"),
-  sampleRate: $("sample-rate"),
   folder: $("folder"),
   folderBtn: $("folder-btn"),
   tracknum: $("tracknum"),
@@ -500,7 +499,6 @@ async function startDownload() {
   const settings = {
     format: el.format.value,
     quality: parseInt(el.quality.value, 10),
-    sample_rate: el.sampleRate?.value || "auto",
     folder: el.folder.value.trim(),
     tracknum: el.tracknum.checked,
     watermark: wmState(),
@@ -943,7 +941,6 @@ function scheduleSave() {
     callApi("save_config", {
       format: el.format.value,
       quality: parseInt(el.quality.value, 10),
-      sample_rate: el.sampleRate?.value || "auto",
       folder: el.folder.value.trim(),
       tracknum: el.tracknum.checked,
       watermark: wmState(),
@@ -951,7 +948,7 @@ function scheduleSave() {
   }, 400);
 }
 
-[el.format, el.quality, el.sampleRate, el.tracknum].forEach((node) =>
+[el.format, el.quality, el.tracknum].forEach((node) =>
   node?.addEventListener("change", scheduleSave)
 );
 el.folder.addEventListener("input", scheduleSave);
@@ -1019,8 +1016,6 @@ function applyWebConfig(config) {
   if (formatField) formatField.hidden = false;
   const qualityField = el.quality.closest(".field");
   if (qualityField) qualityField.hidden = false;
-  const srField = el.sampleRate?.closest(".field");
-  if (srField) srField.hidden = false;
 
   // Limita opções de formato ao que o servidor aceita.
   if (Array.isArray(config?.convert_formats)) {
@@ -1040,9 +1035,8 @@ function applyWebConfig(config) {
     }
   }
 
-  // Aplica qualidade e taxa do config do servidor.
+  // Aplica qualidade do config do servidor.
   if (config?.quality) el.quality.value = String(config.quality);
-  if (config?.sample_rate) el.sampleRate.value = config.sample_rate;
 
   // No site, as preferências são poucas: deixa o download em primeiro lugar.
   if (el.settingsCard && el.settingsCard.parentElement) {
@@ -1063,7 +1057,6 @@ function applyWebConfig(config) {
         if (config) {
           if (config.format) el.format.value = config.format;
           if (config.quality) el.quality.value = String(config.quality);
-          if (config.sample_rate) el.sampleRate.value = config.sample_rate;
           if (config.folder) el.folder.value = config.folder;
           if (config.tracknum != null) el.tracknum.checked = Boolean(config.tracknum);
           if (config.platform === "android") {
