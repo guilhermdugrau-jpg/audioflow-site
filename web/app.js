@@ -18,6 +18,7 @@ const el = {
   settingsCard: $("settings-card"),
   format: $("format"),
   quality: $("quality"),
+  sampleRate: $("sample-rate"),
   folder: $("folder"),
   folderBtn: $("folder-btn"),
   tracknum: $("tracknum"),
@@ -499,6 +500,7 @@ async function startDownload() {
   const settings = {
     format: el.format.value,
     quality: parseInt(el.quality.value, 10),
+    sample_rate: el.sampleRate?.value || "auto",
     folder: el.folder.value.trim(),
     tracknum: el.tracknum.checked,
     watermark: wmState(),
@@ -941,6 +943,7 @@ function scheduleSave() {
     callApi("save_config", {
       format: el.format.value,
       quality: parseInt(el.quality.value, 10),
+      sample_rate: el.sampleRate?.value || "auto",
       folder: el.folder.value.trim(),
       tracknum: el.tracknum.checked,
       watermark: wmState(),
@@ -948,8 +951,8 @@ function scheduleSave() {
   }, 400);
 }
 
-[el.format, el.quality, el.tracknum].forEach((node) =>
-  node.addEventListener("change", scheduleSave)
+[el.format, el.quality, el.sampleRate, el.tracknum].forEach((node) =>
+  node?.addEventListener("change", scheduleSave)
 );
 el.folder.addEventListener("input", scheduleSave);
 
@@ -1001,20 +1004,43 @@ function applyAndroidConfig(config) {
 }
 
 function applyWebConfig(config) {
-  // No site: mesma base do Android (sem pasta, sem update, sem assinatura),
-  // e sem escolha de formato — o servidor entrega M4A nativo, sem ffmpeg.
+  // No site: o servidor pode converter se AUDIOFLOW_ENABLE_CONVERT=1.
   applyAndroidConfig(config);
   window.__web = true;
   document.body.classList.add("is-web");
   if (el.webNote) el.webNote.hidden = false;
   const settingsTitle = $("settings-title");
   if (settingsTitle) settingsTitle.textContent = "Preferências";
+
+  // Mostra campo de formato (só os suportados pelo servidor).
   const formatField = el.format.closest(".field");
-  if (formatField) formatField.hidden = true;
+  if (formatField) formatField.hidden = false;
   const qualityField = el.quality.closest(".field");
-  if (qualityField) qualityField.hidden = true;
-  el.format.value = "m4a";
-  el.quality.value = "192";
+  if (qualityField) qualityField.hidden = false;
+  const srField = el.sampleRate?.closest(".field");
+  if (srField) srField.hidden = false;
+
+  // Limita opções de formato ao que o servidor aceita.
+  if (Array.isArray(config?.convert_formats)) {
+    [...el.format.options].forEach((opt) => {
+      opt.hidden = !config.convert_formats.includes(opt.value);
+    });
+    if (!config.convert_formats.includes(el.format.value)) {
+      el.format.value = config.convert_formats[0] || "m4a";
+    }
+  } else {
+    // Fallback: só m4a/opus se o servidor não mandar a lista.
+    [...el.format.options].forEach((opt) => {
+      opt.hidden = !["m4a", "opus"].includes(opt.value);
+    });
+    if (!["m4a", "opus"].includes(el.format.value)) {
+      el.format.value = "m4a";
+    }
+  }
+
+  // Aplica qualidade e taxa do config do servidor.
+  if (config?.quality) el.quality.value = String(config.quality);
+  if (config?.sample_rate) el.sampleRate.value = config.sample_rate;
 
   // No site, as preferências são poucas: deixa o download em primeiro lugar.
   if (el.settingsCard && el.settingsCard.parentElement) {
@@ -1035,6 +1061,7 @@ function applyWebConfig(config) {
         if (config) {
           if (config.format) el.format.value = config.format;
           if (config.quality) el.quality.value = String(config.quality);
+          if (config.sample_rate) el.sampleRate.value = config.sample_rate;
           if (config.folder) el.folder.value = config.folder;
           if (config.tracknum != null) el.tracknum.checked = Boolean(config.tracknum);
           if (config.platform === "android") {
