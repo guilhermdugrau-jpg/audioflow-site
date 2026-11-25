@@ -999,6 +999,6 @@ function applyWebConfig(config) {
 
   if (isHttpMode()) { startEventPoll(); if (!LOCAL_HOST && !API_BASE) toast("error", "API nÃ£o configurada. Defina window.AUDIOFLOW_API_BASE no config.js."); }
 
-  callApi("check_update_async").catch(function() {});
+  // Removido auto-check de atualização no init - só verifica quando o usuário clicar no botão
   setStatus("ready");
 })();
