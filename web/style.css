@@ -156,6 +156,9 @@ body {
 
 ::selection { background: rgba(0, 255, 136, 0.3); color: var(--text-inverse); }
 
+/* Garante que [hidden] funcione em todos os elementos */
+[hidden] { display: none !important; }
+
 :focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
@@ -837,11 +840,6 @@ a:hover { color: var(--brand-bright); }
   display: grid; place-items: center; padding: var(--space-4);
   background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(12px);
   animation: fade-in var(--dur-med) var(--ease-out) both;
-  pointer-events: none;
-}
-
-.modal-backdrop:not([hidden]) {
-  pointer-events: auto;
 }
 
 .modal { width: min(100%, 480px); background: linear-gradient(180deg, #0a1812, #06100c); border: 1px solid var(--border-strong); border-radius: var(--radius-2xl); box-shadow: var(--shadow-xl), var(--shadow-glow-strong); padding: var(--space-6); animation: slide-up var(--dur-slow) var(--ease-out) both; }
