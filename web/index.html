@@ -41,7 +41,7 @@
       <section class="card card--hero" aria-labelledby="search-title">
         <div class="hero-top">
           <div class="hero-text">
-            <span class="hero__badge"><span class="hero__badge-dot"></span> Spotify → M4A</span>
+            <span class="hero__badge"><span class="hero__badge-dot"></span> Spotify → M4A/MP3/Opus/FLAC/WAV</span>
             <h1 class="card__title" id="search-title">Sua música, pronta para <span class="grad">ouvir offline</span>.</h1>
             <p class="card__subtitle">Cole o link de uma playlist, álbum ou faixa do Spotify.</p>
           </div>
@@ -78,6 +78,7 @@
           <div class="tags" aria-hidden="true">
             <span class="tag">até 50 faixas</span>
             <span class="tag">M4A nativo</span>
+            <span class="tag">3 min TTL</span>
             <span class="tag">grátis</span>
           </div>
         </div>
@@ -122,17 +123,6 @@
             </div>
           </label>
 
-          <label class="field field--wide">
-            <span class="field__label">Pasta de destino</span>
-            <div class="folder">
-              <input id="folder" class="folder__input" type="text" readonly aria-label="Pasta de destino" />
-              <button id="folder-btn" class="btn btn--ghost" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
-                Escolher
-              </button>
-            </div>
-          </label>
-
           <label class="switch">
             <input id="tracknum" type="checkbox" />
             <span class="switch__track" aria-hidden="true"></span>
@@ -142,7 +132,7 @@
           <label class="switch switch--wide">
             <input id="wm-enabled" type="checkbox" />
             <span class="switch__track" aria-hidden="true"></span>
-            <span class="switch__label">Assinatura de áudio — frase "LJCD" na música</span>
+            <span class="switch__label">Assinatura de áudio — frase na música</span>
           </label>
 
           <div class="wm-options" id="wm-options" hidden>
@@ -170,12 +160,12 @@
 
             <label class="field">
               <span class="field__label">Repetir a cada (segundos)</span>
-              <input id="wm-repeat-every" class="folder__input" type="number" min="0" step="1" value="0" placeholder="0 = uma vez" aria-label="Intervalo entre repetições em segundos" />
+              <input id="wm-repeat-every" class="input" type="number" min="0" step="1" value="0" placeholder="0 = uma vez" aria-label="Intervalo entre repetições em segundos" />
             </label>
 
             <label class="field">
               <span class="field__label">Máx. repetições</span>
-              <input id="wm-repeat-count" class="folder__input" type="number" min="0" step="1" value="0" placeholder="0 = ilimitado" aria-label="Número máximo de repetições" />
+              <input id="wm-repeat-count" class="input" type="number" min="0" step="1" value="0" placeholder="0 = ilimitado" aria-label="Número máximo de repetições" />
             </label>
 
             <div class="field field--wide">
@@ -193,10 +183,7 @@
               <div class="wm-voice">
                 <select id="wm-voice" class="select" aria-label="Origem da voz">
                   <option value="tts">Voz do computador (TTS)</option>
-                  <option value="custom">Arquivo de áudio personalizado</option>
                 </select>
-                <button id="wm-voice-btn" class="btn btn--ghost" type="button" hidden>Escolher arquivo…</button>
-                <span id="wm-voice-name" class="hint" hidden></span>
               </div>
             </div>
           </div>
@@ -241,10 +228,10 @@
       <section class="card" id="downloads-card" aria-labelledby="downloads-title" hidden>
         <div class="card__head">
           <h2 class="card__title card__title--sm" id="downloads-title">Seus arquivos</h2>
-          <a id="download-zip" class="btn btn--ghost" href="#" hidden>
+          <button id="download-zip" class="btn btn--ghost" type="button" hidden>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
             Baixar tudo (.zip)
-          </a>
+          </button>
         </div>
         <ul class="downloads" id="downloads-list"></ul>
         <p class="hint">Os arquivos ficam disponíveis por 3 minutos e depois são apagados.</p>

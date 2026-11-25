@@ -18,8 +18,6 @@ const el = {
   settingsCard: $("settings-card"),
   format: $("format"),
   quality: $("quality"),
-  folder: $("folder"),
-  folderBtn: $("folder-btn"),
   tracknum: $("tracknum"),
   download: $("download-btn"),
   downloadLabel: $("download-label"),
@@ -59,8 +57,6 @@ const el = {
   wmDeep: $("wm-effect-deep"),
   wmRadio: $("wm-effect-radio"),
   wmVoice: $("wm-voice"),
-  wmVoiceBtn: $("wm-voice-btn"),
-  wmVoiceName: $("wm-voice-name"),
   wmRepeatEvery: $("wm-repeat-every"),
   wmRepeatCount: $("wm-repeat-count"),
 };
@@ -501,7 +497,6 @@ async function startDownload() {
   const settings = {
     format: el.format.value,
     quality: parseInt(el.quality.value, 10),
-    folder: el.folder.value.trim(),
     tracknum: el.tracknum.checked,
     watermark: wmState(),
   };
@@ -729,7 +724,7 @@ function wmState() {
     position: el.wmPosition.value,
     volume: parseInt(el.wmVolume.value, 10) / 100,
     effects: wmEffects(),
-    voice: el.wmVoice.value === "custom" ? window.__wmVoicePath || "custom" : "tts",
+    voice: "tts",
     repeat_every: parseFloat(el.wmRepeatEvery?.value) || 0,
     repeat_count: parseInt(el.wmRepeatCount?.value, 10) || 0,
   };
@@ -756,17 +751,8 @@ function wmApplyConfig(wm) {
   el.wmReverb.checked = effects.includes("reverb");
   el.wmDeep.checked = effects.includes("deep");
   el.wmRadio.checked = effects.includes("radio");
-  if (wm.voice) {
-    if (wm.voice === "tts") {
-      el.wmVoice.value = "tts";
-    } else {
-      el.wmVoice.value = "custom";
-      window.__wmVoicePath = wm.voice;
-      el.wmVoiceName.hidden = false;
-      el.wmVoiceName.textContent = wm.voice.split(/[\\/]/).pop();
-    }
-  }
-  wmSyncVoiceUI();
+  // Voz sempre TTS no web
+  el.wmVoice.value = "tts";
 }
 
 function wmSyncVoiceUI() {
@@ -788,40 +774,12 @@ el.wmVolume.addEventListener("input", () => {
   scheduleSave();
 });
 
-[el.wmText, el.wmPosition, el.wmEcho, el.wmReverb, el.wmDeep, el.wmRadio, el.wmVoice, el.wmRepeatEvery, el.wmRepeatCount].forEach((node) =>
-  node?.addEventListener("change", () => {
-    wmSyncVoiceUI();
-    scheduleSave();
-  })
+[el.wmText, el.wmPosition, el.wmEcho, el.wmReverb, el.wmDeep, el.wmRadio, el.wmRepeatEvery, el.wmRepeatCount].forEach((node) =>
+  node?.addEventListener("change", scheduleSave)
 );
 el.wmText.addEventListener("input", scheduleSave);
 el.wmRepeatEvery?.addEventListener("input", scheduleSave);
 el.wmRepeatCount?.addEventListener("input", scheduleSave);
-
-el.wmVoiceBtn.addEventListener("click", async () => {
-  try {
-    const file = await callApi("pick_voice_file");
-    if (file) {
-      el.wmVoiceName.hidden = false;
-      el.wmVoiceName.textContent = file.split(/[\\/]/).pop();
-      window.__wmVoicePath = file;
-      scheduleSave();
-    }
-  } catch (e) {
-    toast("error", e?.message || "Não foi possível escolher o arquivo de voz.");
-  }
-});
-
-/* ---------------- Pasta ---------------- */
-
-async function pickFolder() {
-  try {
-    const folder = await callApi("pick_folder");
-    if (folder) el.folder.value = folder;
-  } catch (e) {
-    toast("error", e?.message || "Não foi possível escolher a pasta.");
-  }
-}
 
 /* ---------------- Eventos vindos do Python ---------------- */
 
@@ -942,7 +900,6 @@ el.input.addEventListener("keydown", (e) => {
 el.download.addEventListener("click", startDownload);
 
 el.stop.addEventListener("click", stopDownload);
-el.folderBtn.addEventListener("click", pickFolder);
 
 /* ---------------- Persistência de configurações ---------------- */
 
@@ -953,7 +910,6 @@ function scheduleSave() {
     callApi("save_config", {
       format: el.format.value,
       quality: parseInt(el.quality.value, 10),
-      folder: el.folder.value.trim(),
       tracknum: el.tracknum.checked,
       watermark: wmState(),
     }).catch(() => {});
@@ -963,7 +919,6 @@ function scheduleSave() {
 [el.format, el.quality, el.tracknum].forEach((node) =>
   node?.addEventListener("change", scheduleSave)
 );
-el.folder.addEventListener("input", scheduleSave);
 
 /* ---------------- Inicialização ---------------- */
 
@@ -994,8 +949,6 @@ function callApiTimeout(method, timeoutMs, ...args) {
 
 function applyAndroidConfig(config) {
   // Sem seletor de pasta nem atualização automática no celular.
-  const folderField = el.folder.closest(".field");
-  if (folderField) folderField.hidden = true;
   el.checkUpdateBtn.hidden = true;
   // No Android não há ffmpeg: sem assinatura de áudio.
   const wmSwitch = el.wmEnabled.closest(".switch--wide");
@@ -1008,7 +961,6 @@ function applyAndroidConfig(config) {
   if (!["m4a", "opus"].includes(el.format.value)) {
     el.format.value = "m4a";
   }
-  if (config.folder) el.folder.value = config.folder;
   window.__android = true;
 }
 
@@ -1075,7 +1027,6 @@ function applyWebConfig(config) {
         if (config) {
           if (config.format) el.format.value = config.format;
           if (config.quality) el.quality.value = String(config.quality);
-          if (config.folder) el.folder.value = config.folder;
           if (config.tracknum != null) el.tracknum.checked = Boolean(config.tracknum);
           if (config.platform === "android") {
             applyAndroidConfig(config);
