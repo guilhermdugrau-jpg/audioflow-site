@@ -57,6 +57,8 @@ const el = {
   wmDeep: $("wm-effect-deep"),
   wmRadio: $("wm-effect-radio"),
   wmVoice: $("wm-voice"),
+  wmPreview: $("wm-preview"),
+  wmPreviewLabel: $("wm-preview-label"),
   wmRepeatEvery: $("wm-repeat-every"),
   wmRepeatCount: $("wm-repeat-count"),
 };
@@ -720,11 +722,11 @@ function wmEffects() {
 function wmState() {
   return {
     enabled: el.wmEnabled.checked,
-    text: el.wmText.value.trim() || "LJCD",
+    text: el.wmText.value.trim() || "Lucas CDs",
     position: el.wmPosition.value,
     volume: parseInt(el.wmVolume.value, 10) / 100,
     effects: wmEffects(),
-    voice: "tts",
+    voice: el.wmVoice.value || "deep",
     repeat_every: parseFloat(el.wmRepeatEvery?.value) || 0,
     repeat_count: parseInt(el.wmRepeatCount?.value, 10) || 0,
   };
@@ -751,18 +753,66 @@ function wmApplyConfig(wm) {
   el.wmReverb.checked = effects.includes("reverb");
   el.wmDeep.checked = effects.includes("deep");
   el.wmRadio.checked = effects.includes("radio");
-  // Voz sempre TTS no web
-  el.wmVoice.value = "tts";
-}
-
-function wmSyncVoiceUI() {
-  const custom = el.wmVoice.value === "custom";
-  el.wmVoiceBtn.hidden = !custom;
+  el.wmVoice.value = ["deep", "ultra", "pt"].includes(wm.voice) ? wm.voice : "deep";
 }
 
 function wmSyncVolumeLabel() {
   el.wmVolumeLabel.textContent = `${el.wmVolume.value}%`;
 }
+
+/* Prévia da voz (botão "Ouvir exemplo") */
+let wmPreviewAudio = null;
+
+function wmPreviewReset() {
+  el.wmPreview.classList.remove("is-playing");
+  el.wmPreviewLabel.textContent = "Ouvir exemplo";
+}
+
+function wmPreviewStop() {
+  if (wmPreviewAudio && !wmPreviewAudio.paused) wmPreviewAudio.pause();
+  wmPreviewReset();
+}
+
+async function playWmPreview() {
+  if (wmPreviewAudio && !wmPreviewAudio.paused) {
+    wmPreviewStop();
+    return;
+  }
+  const text = el.wmText.value.trim() || "Lucas CDs";
+  const params = new URLSearchParams({
+    text,
+    voice: el.wmVoice.value || "deep",
+    effects: wmEffects().join(","),
+    volume: String(parseInt(el.wmVolume.value, 10) / 100),
+  });
+  const url = fileUrl(`/api/watermark/preview?${params.toString()}`);
+
+  el.wmPreview.disabled = true;
+  el.wmPreviewLabel.textContent = "Gerando…";
+  try {
+    if (!wmPreviewAudio) {
+      wmPreviewAudio = new Audio();
+      wmPreviewAudio.preload = "none";
+      wmPreviewAudio.addEventListener("ended", wmPreviewReset);
+      wmPreviewAudio.addEventListener("pause", wmPreviewReset);
+      wmPreviewAudio.addEventListener("error", () => {
+        wmPreviewReset();
+        toast("error", "Não foi possível gerar o exemplo agora.");
+      });
+    }
+    wmPreviewAudio.src = url;
+    await wmPreviewAudio.play();
+    el.wmPreview.classList.add("is-playing");
+    el.wmPreviewLabel.textContent = "Parar";
+  } catch {
+    wmPreviewReset();
+    toast("error", "Não foi possível tocar o exemplo. Tente novamente.");
+  } finally {
+    el.wmPreview.disabled = false;
+  }
+}
+
+el.wmPreview.addEventListener("click", playWmPreview);
 
 el.wmEnabled.addEventListener("change", () => {
   el.wmOptions.hidden = !el.wmEnabled.checked;
@@ -774,8 +824,11 @@ el.wmVolume.addEventListener("input", () => {
   scheduleSave();
 });
 
-[el.wmText, el.wmPosition, el.wmEcho, el.wmReverb, el.wmDeep, el.wmRadio, el.wmRepeatEvery, el.wmRepeatCount].forEach((node) =>
-  node?.addEventListener("change", scheduleSave)
+[el.wmText, el.wmPosition, el.wmEcho, el.wmReverb, el.wmDeep, el.wmRadio, el.wmVoice, el.wmRepeatEvery, el.wmRepeatCount].forEach((node) =>
+  node?.addEventListener("change", () => {
+    wmPreviewStop();
+    scheduleSave();
+  })
 );
 el.wmText.addEventListener("input", scheduleSave);
 el.wmRepeatEvery?.addEventListener("input", scheduleSave);
@@ -1007,11 +1060,6 @@ function applyWebConfig(config) {
 
   // Aplica qualidade do config do servidor.
   if (config?.quality) el.quality.value = String(config.quality);
-
-  // No site, as preferências são poucas: deixa o download em primeiro lugar.
-  if (el.settingsCard && el.settingsCard.parentElement) {
-    el.settingsCard.parentElement.appendChild(el.settingsCard);
-  }
 }
 
 (async function init() {

@@ -4,15 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#07090e" />
-  <meta name="description" content="Baixe playlists, álbuns e faixas do Spotify em M4A. Rápido, grátis e sem instalar nada." />
+  <meta name="theme-color" content="#08090c" />
+  <meta name="description" content="Baixe playlists, álbuns e faixas do Spotify em MP3, M4A, Opus, FLAC ou WAV. Rápido, grátis e sem instalar nada." />
   <title>AudioFlow — Spotify para áudio</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231ed760'/%3E%3Cpath d='M14 38c6-10 12-10 18 0s12 10 18 0' fill='none' stroke='%23050a07' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23f2b544'/%3E%3Cpath d='M14 38c6-10 12-10 18 0s12 10 18 0' fill='none' stroke='%231b1305' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="bg" aria-hidden="true">
-    <span class="bg__glow bg__glow--green"></span>
+    <span class="bg__glow bg__glow--amber"></span>
     <span class="bg__glow bg__glow--blue"></span>
     <span class="bg__grid"></span>
   </div>
@@ -84,6 +84,29 @@
         </div>
       </section>
 
+      <!-- Ação -->
+      <section class="card card--action" aria-labelledby="action-title">
+        <h2 class="visually-hidden" id="action-title">Download</h2>
+
+        <div class="progress" id="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso do download" hidden>
+          <div class="progress__fill" id="progress-fill"></div>
+        </div>
+        <p class="progress__label" id="progress-label" aria-live="polite" hidden>&nbsp;</p>
+
+        <div class="actions">
+          <button id="download-btn" class="btn btn--primary" type="button">
+            <span class="btn__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
+            </span>
+            <span class="btn__label" id="download-label">Baixar</span>
+          </button>
+          <button id="stop-btn" class="btn btn--danger" type="button" disabled>
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            Parar
+          </button>
+        </div>
+      </section>
+
       <!-- Configurações -->
       <section class="card" id="settings-card" aria-labelledby="settings-title">
         <div class="card__head">
@@ -92,7 +115,7 @@
 
         <div class="web-note" id="web-note" hidden>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-          <span><b>Modo web:</b> o áudio sai em M4A nativo, sem conversão. Os arquivos ficam disponíveis por 3 minutos.</span>
+          <span><b>Processado no servidor:</b> escolha o formato e a qualidade. Os arquivos ficam disponíveis por 3 minutos e depois são apagados.</span>
         </div>
 
         <div class="settings">
@@ -136,9 +159,14 @@
           </label>
 
           <div class="wm-options" id="wm-options" hidden>
+            <p class="wm-note field--wide">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              <span><b>Clique em “Ouvir exemplo”</b> para escutar a voz. Ela é grave, estilo locutor, e a música abaixa um pouco enquanto a assinatura toca — depois volta ao volume normal.</span>
+            </p>
+
             <label class="field">
               <span class="field__label">Frase falada</span>
-              <input id="wm-text" class="folder__input" type="text" value="LJCD" maxlength="40" />
+              <input id="wm-text" class="input" type="text" value="Lucas CDs" maxlength="40" />
             </label>
 
             <label class="field">
@@ -154,8 +182,8 @@
             </label>
 
             <label class="field field--wide">
-              <span class="field__label">Volume da assinatura: <b id="wm-volume-label" class="wm-volume-label">30%</b></span>
-              <input id="wm-volume" class="slider" type="range" min="0" max="100" value="30" aria-label="Volume da assinatura" />
+              <span class="field__label">Volume da assinatura: <b id="wm-volume-label" class="wm-volume-label">45%</b></span>
+              <input id="wm-volume" class="slider" type="range" min="0" max="100" value="45" aria-label="Volume da assinatura" />
             </label>
 
             <label class="field">
@@ -181,40 +209,26 @@
             <div class="field field--wide">
               <span class="field__label">Voz</span>
               <div class="wm-voice">
-                <select id="wm-voice" class="select" aria-label="Origem da voz">
-                  <option value="tts">Voz do computador (TTS)</option>
-                </select>
+                <div class="select-wrap">
+                  <select id="wm-voice" class="select" aria-label="Tipo de voz">
+                    <option value="deep" selected>Grave (recomendado)</option>
+                    <option value="ultra">Muito grave</option>
+                    <option value="pt">Português (grave)</option>
+                  </select>
+                  <svg class="select__chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+                </div>
+                <button id="wm-preview" class="btn btn--ghost btn--preview" type="button">
+                  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                  <span id="wm-preview-label">Ouvir exemplo</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Ação -->
-      <section class="card card--action" aria-labelledby="action-title">
-        <h2 class="visually-hidden" id="action-title">Download</h2>
-
-        <div class="progress" id="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso do download" hidden>
-          <div class="progress__fill" id="progress-fill"></div>
-        </div>
-        <p class="progress__label" id="progress-label" aria-live="polite" hidden>&nbsp;</p>
-
-        <div class="actions">
-          <button id="download-btn" class="btn btn--primary" type="button">
-            <span class="btn__icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/></svg>
-            </span>
-            <span class="btn__label" id="download-label">Baixar</span>
-          </button>
-          <button id="stop-btn" class="btn btn--danger" type="button" disabled>
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-            Parar
-          </button>
-        </div>
-      </section>
-
       <!-- Painel de status das músicas -->
-      <section class="card" aria-labelledby="status-title">
+      <section class="card card--status" aria-labelledby="status-title">
         <div class="card__head">
           <h2 class="card__title card__title--sm" id="status-title">Músicas</h2>
           <span class="count-badge" id="count-badge" hidden>0</span>
@@ -222,6 +236,16 @@
         <div class="track-list" id="track-list" aria-live="polite">
           <p class="track-list__empty" id="track-empty">Nenhuma música ainda — inicie um download para ver o progresso.</p>
         </div>
+      </section>
+
+      <!-- Dicas -->
+      <section class="card card--tips" aria-labelledby="tips-title">
+        <h2 class="card__title card__title--sm" id="tips-title">Como funciona</h2>
+        <ol class="tips">
+          <li><span class="tips__num">1</span><span>Cole o link de uma playlist, álbum ou faixa.</span></li>
+          <li><span class="tips__num">2</span><span>Escolha o formato, a qualidade e a assinatura.</span></li>
+          <li><span class="tips__num">3</span><span>Baixe as faixas ou o .zip completo.</span></li>
+        </ol>
       </section>
 
       <!-- Arquivos prontos (modo web) -->
