@@ -226,8 +226,10 @@ function fmtSpeed(bytesPerSec) {
 
 function setStatus(mode) {
   const busy = mode === "busy";
-  if (el.statusDot) el.statusDot.classList.toggle("pill--busy", busy);
-  if (el.statusDot) el.statusDot.classList.toggle("pill--success", !busy);
+  if (el.statusDot) {
+    el.statusDot.classList.toggle("status-indicator--busy", busy);
+    el.statusDot.classList.toggle("status-indicator--ready", !busy);
+  }
   if (el.statusText) el.statusText.textContent = busy ? "Baixando" : "Pronto";
 }
 

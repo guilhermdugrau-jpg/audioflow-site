@@ -47,9 +47,8 @@
       </a>
 
       <div class="header__actions">
-        <span class="status-indicator" id="status-indicator" role="status" aria-live="polite">
-          <span class="status-indicator__dot"></span>
-          <span class="status-indicator__text" id="status-text">Pronto</span>
+        <span class="pill pill--success" id="status-indicator" role="status" aria-live="polite">
+          <span class="dot"></span><span id="status-text">Pronto</span>
         </span>
         <button class="header__btn" id="settings-toggle" type="button" aria-label="Configurações" aria-expanded="false">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -127,6 +126,10 @@
                 <span class="btn__loader" aria-hidden="true" hidden>
                   <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4"/></svg>
                 </span>
+              </button>
+              <button id="stop-btn" class="btn btn--danger" type="button" disabled>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                Parar
               </button>
             </div>
             <p class="url-hint" id="url-hint" aria-live="polite">Cole um link de playlist, álbum ou faixa do Spotify</p>
