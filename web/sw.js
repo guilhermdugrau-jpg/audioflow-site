@@ -1,10 +1,11 @@
 /**
- * AudioFlow Service Worker v1
- * Cache-first strategy for static assets, network-first for API
- * Instant loading on repeat visits, offline support
+ * AudioFlow Service Worker v2
+ * - App shell: stale-while-revalidate (abre na hora e se atualiza sozinho)
+ * - HTML: network-first
+ * - API: sempre rede
  */
 
-const CACHE_NAME = 'audioflow-v1';
+const CACHE_NAME = 'audioflow-v2';
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -13,18 +14,25 @@ const STATIC_ASSETS = [
   '/config.js',
 ];
 
-const CACHE_STRATEGIES = {
-  // Cache-first for static assets
-  static: ['style.css', 'app.js', 'config.js'],
-  // Network-first for HTML (always fresh)
-  html: ['index.html'],
-  // Stale-while-revalidate for fonts
-  fonts: ['fonts.googleapis.com', 'fonts.gstatic.com'],
-};
+const STATIC_FILES = ['style.css', 'app.js', 'config.js'];
+const HTML_FILES = ['index.html'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
+      // cache: 'reload' ignora o cache HTTP imutável e pega a versão nova
+      await Promise.all(
+        STATIC_ASSETS.map(async (url) => {
+          try {
+            const response = await fetch(new Request(url, { cache: 'reload' }));
+            if (response.ok) await cache.put(url, response);
+          } catch {
+            /* offline: segue com o que já existir */
+          }
+        })
+      );
+    })()
   );
   self.skipWaiting();
 });
@@ -43,47 +51,48 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Skip non-GET requests
   if (event.request.method !== 'GET') return;
-
-  // Skip API calls - always network
   if (url.pathname.startsWith('/api/')) return;
 
-  // Skip external domains except fonts
-  if (url.origin !== location.origin && !CACHE_STRATEGIES.fonts.some(d => url.hostname.includes(d))) {
+  const sameOrigin = url.origin === location.origin;
+  const isFont = url.hostname.includes('fonts.googleapis.com') || url.hostname.includes('fonts.gstatic.com');
+
+  if (!sameOrigin && !isFont) return;
+
+  if (sameOrigin && STATIC_FILES.some((file) => url.pathname.endsWith(file))) {
+    event.respondWith(staleWhileRevalidate(event.request));
     return;
   }
 
-  // Determine strategy
-  const isStatic = CACHE_STRATEGIES.static.some(f => url.pathname.endsWith(f));
-  const isHtml = CACHE_STRATEGIES.html.some(f => url.pathname.endsWith(f) || url.pathname === '/');
-
-  if (isStatic) {
-    // Cache-first for CSS/JS
-    event.respondWith(cacheFirst(event.request));
-  } else if (isHtml) {
-    // Network-first for HTML
+  if (sameOrigin && (HTML_FILES.some((file) => url.pathname.endsWith(file)) || url.pathname === '/')) {
     event.respondWith(networkFirst(event.request));
-  } else if (url.hostname.includes('fonts.gstatic.com')) {
-    // Stale-while-revalidate for font files
+    return;
+  }
+
+  if (isFont) {
     event.respondWith(staleWhileRevalidate(event.request));
   }
 });
 
-async function cacheFirst(request) {
-  const cached = await caches.match(request);
-  if (cached) return cached;
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(request);
 
-  try {
-    const response = await fetch(request);
-    if (response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, response.clone());
-    }
-    return response;
-  } catch {
-    return new Response('Offline', { status: 503 });
+  const network = fetch(request)
+    .then((response) => {
+      if (response.ok) cache.put(request, response.clone());
+      return response;
+    })
+    .catch(() => null);
+
+  if (cached) {
+    // Atualiza em segundo plano, sem atrasar a resposta
+    network.catch(() => {});
+    return cached;
   }
+
+  const response = await network;
+  return response || new Response('Offline', { status: 503 });
 }
 
 async function networkFirst(request) {
@@ -98,28 +107,4 @@ async function networkFirst(request) {
     const cached = await caches.match(request);
     return cached || new Response('Offline', { status: 503 });
   }
-}
-
-async function staleWhileRevalidate(request) {
-  const cached = await caches.match(request);
-  const fetchPromise = fetch(request).then((response) => {
-    if (response.ok) {
-      caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-    }
-    return response;
-  }).catch(() => cached);
-
-  return cached || fetchPromise;
-}
-
-// Background sync for failed downloads (future enhancement)
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'download-retry') {
-    event.waitUntil(retryFailedDownloads());
-  }
-});
-
-async function retryFailedDownloads() {
-  // Implementation for retrying failed downloads when online
-  console.log('Background sync: retrying failed downloads');
 }

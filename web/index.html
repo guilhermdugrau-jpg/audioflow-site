@@ -4,116 +4,78 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="color-scheme" content="dark" />
-  <meta name="theme-color" content="#050806" />
-  <meta name="description" content="AudioFlow — Transforme suas playlists do Spotify em arquivos de áudio com qualidade profissional. MP3, M4A, Opus, FLAC, WAV." />
+  <meta name="theme-color" content="#07090a" />
+  <meta name="description" content="AudioFlow — Transforme músicas, álbuns e playlists em arquivos de áudio com qualidade de estúdio. Busque pelo nome ou cole um link, sem login." />
   <title>AudioFlow — Sua música. Sua qualidade. Seu controle.</title>
 
-  <!-- Critical Resource Hints -->
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://audioflow-api-production.up.railway.app" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn-images.dzcdn.net">
   <link rel="dns-prefetch" href="https://image-cdn-fa.spotifycdn.com">
-  <link rel="dns-prefetch" href="https://image-cdn-ak.spotifycdn.com">
 
-  <!-- Preload Critical Assets -->
   <link rel="preload" as="style" href="style.css">
   <link rel="preload" as="script" href="app.js">
-  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" crossorigin>
 
-  <!-- Fonts with font-display: swap -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"></noscript>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"></noscript>
 
-  <!-- App Icon -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'%3E%3Cstop offset='0%' stop-color='%2300ff88'/%3E%3Cstop offset='100%' stop-color='%2300ccff'/%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='url(%23g)'/%3E%3Cpath d='M16 20h6v-8h-6zM26 20h6v-12h-6zM36 20h6v-4h-6zM46 20h6v-14h-6z' fill='%23030806'/%3E%3C/svg%3E" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0%' y1='0%' x2='100%' y2='100%'%3E%3Cstop offset='0%' stop-color='%238dffc0'/%3E%3Cstop offset='100%' stop-color='%2367d8ff'/%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M16 22h5v20h-5zM27 16h5v32h-5zM38 24h5v16h-5zM49 19h5v26h-5z' fill='%2307090a'/%3E%3C/svg%3E" />
 
-  <!-- Critical CSS Inlined (above-the-fold) -->
-  <style>
-    :root{--bg:#030806;--brand:#00ff88;--text:#e8f5ef;--surface:rgba(10,20,16,.85);--border:rgba(0,255,136,.08);--radius-lg:18px;--shadow-lg:0 24px 64px rgba(0,0,0,.7);--font-ui:Inter,system-ui,sans-serif;--font-display:"Space Grotesk",system-ui,sans-serif;--fs-md:.95rem;--fs-xl:1.35rem;--fs-3xl:2.5rem;--space-4:16px;--space-5:24px}
-    *[hidden]{display:none!important}html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}body{font-family:var(--font-ui);font-size:var(--fs-md);color:var(--text);background:var(--bg);min-height:100vh;margin:0}
-    .ambient{position:fixed;inset:0;z-index:0;pointer-events:none}.ambient__orb{position:absolute;border-radius:50%;filter:blur(120px);opacity:.4}.ambient__orb--1{width:500px;height:500px;top:-200px;right:-150px;background:radial-gradient(circle,rgba(0,255,136,.18),transparent 70%)}.ambient__orb--2{width:450px;height:450px;bottom:20%;left:-200px;background:radial-gradient(circle,rgba(0,204,255,.12),transparent 70%)}.ambient__grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,255,136,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,255,136,.02) 1px,transparent 1px);background-size:80px 80px;mask-image:radial-gradient(ellipse 100% 80% at 50% 0%,#000 15%,transparent 80%);opacity:.6}
-    .app{position:relative;z-index:1;max-width:100%;margin:0 auto;padding:0}
-    .header{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 24px;background:linear-gradient(180deg,rgba(3,8,6,.95),rgba(3,8,6,.7));backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-    .header__brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
-    .header__logo{width:40px;height:40px;display:grid;place-items:center;border-radius:14px;background:linear-gradient(135deg,var(--brand),#00ccff);box-shadow:0 0 32px rgba(0,255,136,.15)}
-    .header__title{font-family:var(--font-display);font-size:var(--fs-xl);font-weight:700;background:linear-gradient(90deg,var(--text),var(--brand));-webkit-background-clip:text;background-clip:text;color:transparent}
-    .status-indicator{display:inline-flex;align-items:center;gap:8px;font-size:.72rem;font-weight:600;padding:4px 12px;border-radius:999px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.25);color:var(--brand)}
-    .status-indicator__dot{width:6px;height:6px;border-radius:50%;background:var(--brand);box-shadow:0 0 8px var(--brand);animation:pulse 2s ease-in-out infinite}
-    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.9)}}
-    .main{padding:24px 20px 40px;display:flex;flex-direction:column;gap:20px}
-    .hero{display:flex;flex-direction:column;gap:24px}
-    .hero__content{text-align:center;padding:8px 0}
-    .hero__title{font-family:var(--font-display);font-size:clamp(2.5rem,6vw,5rem);font-weight:700;line-height:1.1;letter-spacing:-.04em;color:var(--text);margin-bottom:16px}
-    .hero__highlight{color:var(--brand);background:linear-gradient(90deg,var(--brand),#00ccff);-webkit-background-clip:text;background-clip:text;color:transparent}
-    .hero__subtitle{font-size:clamp(.95rem,2vw,1.35rem);line-height:1.65;color:#8aa896;max-width:60ch;margin:0 auto}
-    .url-card{background:linear-gradient(180deg,#08140e,#06100c);border:1px solid var(--border);border-radius:24px;padding:24px;box-shadow:var(--shadow-lg),0 0 32px rgba(0,255,136,.15);backdrop-filter:blur(20px)}
-    .url-input-wrapper{position:relative;display:flex;align-items:center;height:60px;border-radius:18px;border:1px solid var(--border);background:#030806;transition:border-color .22s,box-shadow .22s}
-    .url-input-wrapper:focus-within{border-color:rgba(0,255,136,.45);box-shadow:0 0 32px rgba(0,255,136,.15),inset 0 0 0 1px rgba(0,255,136,.08);background:#06100c}
-    .url-input{width:100%;height:100%;padding:0 52px 0 54px;font-size:1rem;font-family:var(--font-ui);color:var(--text);background:transparent;border:none;border-radius:18px;outline:none}
-    .url-input::placeholder{color:#4d6b5a}
-    .url-input__icon{position:absolute;left:16px;width:22px;height:22px;color:#4d6b5a;pointer-events:none}
-    .url-input-wrapper:focus-within .url-input__icon{color:var(--brand)}
-    .url-card__actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;font-family:var(--font-ui);font-size:.95rem;font-weight:600;border:1px solid transparent;border-radius:18px;cursor:pointer;white-space:nowrap;touch-action:manipulation;transition:transform .12s,box-shadow .22s,background .22s,border-color .22s}
-    .btn--primary{color:#030806;background:linear-gradient(135deg,#00ff88,#00cc6e,#00aa5a);box-shadow:0 8px 24px -8px rgba(0,255,136,.5),inset 0 1px 0 rgba(255,255,255,.2)}
-    .btn--secondary{color:var(--text);background:rgba(255,255,255,.04);border-color:var(--border)}
-    .btn--danger{color:#ff3366;background:rgba(255,51,102,.1);border-color:rgba(255,51,102,.2)}
-    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-    .url-hint{font-size:.84rem;color:#4d6b5a;min-height:1.4em;transition:color .22s}
-    .url-hint.meta--error{color:#ff3366}.url-hint.meta--success{color:#00ff88}.url-hint.meta--loading{color:#00ccff}
-  </style>
-
-  <!-- Non-critical CSS loaded asynchronously -->
-  <link rel="stylesheet" href="style.css" media="print" onload="this.media='all'">
-  <noscript><link rel="stylesheet" href="style.css"></noscript>
-
-  <!-- Service Worker Registration -->
+  <link rel="stylesheet" href="style.css" />
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js').catch(() => {});
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('/sw.js').catch(function () {});
       });
     }
   </script>
 </head>
-<body>
-  <!-- Background ambient -->
-  <div class="ambient" aria-hidden="true">
-    <div class="ambient__orb ambient__orb--1"></div>
-    <div class="ambient__orb ambient__orb--2"></div>
-    <div class="ambient__orb ambient__orb--3"></div>
-    <div class="ambient__grid"></div>
-    <div class="ambient__scanline"></div>
+<body data-mode="link">
+
+  <!-- Fundo ambiente -->
+  <div class="backdrop" aria-hidden="true">
+    <div class="backdrop__glow backdrop__glow--mint"></div>
+    <div class="backdrop__glow backdrop__glow--cyan"></div>
+    <div class="backdrop__grid"></div>
+    <div class="backdrop__noise"></div>
   </div>
 
   <div class="app" id="app">
 
-    <!-- Header -->
-    <header class="header" role="banner">
-      <a href="./" class="header__brand" aria-label="AudioFlow — Início">
-        <span class="header__logo" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-            <rect width="32" height="32" rx="8" fill="url(#logoGrad)"/>
-            <path d="M8 20h4v-8h-4zM14 20h4v-12h-4zM20 20h4v-4h-4zM26 20h4v-14h-4z" fill="#030806"/>
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+      <a href="./" class="brand" aria-label="AudioFlow — Início">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <rect width="32" height="32" rx="9" fill="url(#brandGrad)"/>
+            <path d="M8 21h3.5V11H8zM14.2 24h3.5V8h-3.5zM20.4 19h3.5v-6h-3.5zM26.6 22h3.5V10h-3.5z" fill="#07090a"/>
+            <defs>
+              <linearGradient id="brandGrad" x1="0" y1="0" x2="32" y2="32">
+                <stop stop-color="#8dffc0"/><stop offset="1" stop-color="#67d8ff"/>
+              </linearGradient>
+            </defs>
           </svg>
-          <defs>
-            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#00ff88"/>
-              <stop offset="50%" stop-color="#00ccff"/>
-              <stop offset="100%" stop-color="#0088ff"/>
-            </linearGradient>
-          </defs>
         </span>
-        <span class="header__title">AudioFlow</span>
+        <span class="brand__text">
+          <strong>AudioFlow</strong>
+          <small>studio</small>
+        </span>
       </a>
 
-      <div class="header__actions">
+      <nav class="topbar__nav" aria-label="Navegação principal">
+        <a href="#composer">Baixar</a>
+        <a href="#workspace">Fila</a>
+        <a href="#how">Como funciona</a>
+      </nav>
+
+      <div class="topbar__actions">
         <span class="status-indicator" id="status-indicator" role="status" aria-live="polite">
           <span class="status-indicator__dot"></span>
           <span class="status-indicator__text" id="status-text">Pronto</span>
         </span>
-        <button class="header__btn" id="settings-toggle" type="button" aria-label="Configurações" aria-expanded="false">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <button class="icon-btn" id="settings-toggle" type="button" aria-label="Configurações" aria-expanded="false" aria-controls="settings-drawer">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="3"/>
             <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
           </svg>
@@ -121,386 +83,428 @@
       </div>
     </header>
 
-    <!-- Main Content -->
     <main class="main" role="main">
 
-      <!-- Hero Section -->
+      <!-- Hero -->
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero__content">
+        <div class="hero__copy">
+          <p class="eyebrow"><span class="eyebrow__dot"></span> Downloader de estúdio</p>
           <h1 class="hero__title" id="hero-title">
             Sua música.<br>
-            <span class="hero__highlight">Sua qualidade.</span><br>
+            <span class="hero__gradient">Sua qualidade.</span><br>
             Seu controle.
           </h1>
-          <p class="hero__subtitle">
-            Transforme suas músicas e playlists do Spotify em arquivos de áudio<br>
-            com qualidade profissional e configurações totalmente personalizadas.
+          <p class="hero__sub">
+            Cole um link ou busque pelo nome. O AudioFlow encontra a faixa,
+            aplica seus ajustes e entrega o arquivo pronto — sem login.
           </p>
+          <ul class="hero__points" aria-label="Destaques">
+            <li><span></span> Até 50 faixas</li>
+            <li><span></span> M4A · MP3 · FLAC</li>
+            <li><span></span> Arquivos por 3 min</li>
+          </ul>
         </div>
 
-        <!-- URL Input Card -->
-        <div class="url-card" id="url-card">
-          <div class="url-card__inner">
-            <label for="url-input" class="visually-hidden">Link do Spotify</label>
-            <div class="url-input-wrapper">
-              <span class="url-input__icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-              </span>
-              <input
-                id="url-input"
-                class="url-input"
-                type="url"
-                inputmode="url"
-                autocomplete="off"
-                spellcheck="false"
-                placeholder="https://open.spotify.com/playlist/…"
-                aria-label="Link do Spotify (playlist, álbum ou faixa)"
-                aria-describedby="url-hint"
-              />
-              <button id="clear-btn" class="url-input__clear" type="button" aria-label="Limpar link" hidden>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="18" y1="6" x2="6" y2="18"/>
-                  <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-              </button>
-            </div>
-            <div class="url-card__actions">
-              <button id="paste-btn" class="btn btn--secondary" type="button">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                </svg>
-                <span>Colar</span>
-              </button>
-              <button id="download-btn" class="btn btn--primary" type="button">
-                <span class="btn__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7 10 12 15 17 10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                  </svg>
-                </span>
-                <span class="btn__label" id="download-label">Iniciar</span>
-                <span class="btn__loader" aria-hidden="true" hidden>
-                  <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4"/></svg>
-                </span>
-              </button>
-              <button id="stop-btn" class="btn btn--danger" type="button" disabled>
-                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-                Parar
-              </button>
-            </div>
-            <p class="url-hint" id="url-hint" aria-live="polite">Cole um link de playlist, álbum ou faixa do Spotify</p>
-            <div class="url-tags" aria-hidden="true">
-              <span class="url-tag">Até 50 faixas</span>
-              <span class="url-tag">M4A nativo</span>
-              <span class="url-tag">3 min TTL</span>
-              <span class="url-tag">Gratuito</span>
-            </div>
+        <aside class="session-card" aria-label="Resumo da sessão">
+          <div class="session-card__top">
+            <span class="session-card__label">Sessão atual</span>
+            <span class="session-card__live"><i></i> pronta</span>
           </div>
-        </div>
 
-        <!-- Meta Info -->
-        <div class="meta-card" id="meta-card" hidden>
-          <div class="meta-card__cover" id="meta-cover" aria-hidden="true"></div>
-          <div class="meta-card__info">
-            <p class="meta-card__type" id="meta-type">Playlist</p>
-            <p class="meta-card__name" id="meta-name"></p>
-            <p class="meta-card__count" id="meta-count"></p>
+          <div class="session-card__hero">
+            <div>
+              <strong id="summary-format">M4A</strong>
+              <small id="summary-quality">192 kbps</small>
+            </div>
+            <div class="eq" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span><span></span>
+            </div>
           </div>
-        </div>
+
+          <dl class="session-card__rows">
+            <div><dt>Assinatura</dt><dd id="summary-watermark">Desativada</dd></div>
+            <div><dt>Numeração</dt><dd id="summary-tracknum">Desligada</dd></div>
+            <div><dt>Expiração</dt><dd>3 minutos</dd></div>
+          </dl>
+
+          <button class="btn btn--soft btn--block" id="summary-settings" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3"/><path d="M1 14h6M9 8h6M17 16h6"/></svg>
+            Ajustar sessão
+          </button>
+        </aside>
       </section>
 
-      <!-- Progress Bar (Global) -->
-      <div class="global-progress" id="global-progress" hidden role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso geral do download">
-        <div class="global-progress__fill" id="global-progress-fill"></div>
-        <p class="global-progress__label" id="global-progress-label" aria-live="polite"></p>
-      </div>
+      <!-- Composer -->
+      <section class="composer" id="composer" aria-label="Entrada de link ou busca">
+        <div class="composer__head">
+          <div class="mode-switch" id="mode-switch" data-mode="link" role="tablist" aria-label="Modo de entrada">
+            <span class="mode-switch__thumb" aria-hidden="true"></span>
+            <button class="mode-switch__btn is-active" id="mode-link" type="button" role="tab" aria-selected="true" aria-controls="url-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              Link
+            </button>
+            <button class="mode-switch__btn" id="mode-search" type="button" role="tab" aria-selected="false" aria-controls="search-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+              Buscar
+            </button>
+          </div>
+          <span class="composer__hint" id="composer-hint">Cole um link do Spotify</span>
+        </div>
 
-      <!-- Settings Panel (Collapsible) -->
-      <aside class="settings-panel" id="settings-panel" role="complementary" aria-label="Configurações de áudio">
-        <div class="settings-panel__backdrop" id="settings-backdrop" aria-hidden="true"></div>
-        <div class="settings-panel__drawer" id="settings-drawer">
-          <div class="settings-panel__header">
-            <h2 class="settings-panel__title">Configurações</h2>
-            <button class="settings-panel__close" id="settings-close" type="button" aria-label="Fechar configurações">
+        <div class="composer__bar">
+          <div class="url-input-wrapper" id="url-wrapper">
+            <span class="url-input__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            </span>
+            <input
+              id="url-input"
+              class="url-input"
+              type="url"
+              inputmode="url"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="https://open.spotify.com/playlist/…"
+              aria-label="Link do Spotify (playlist, álbum ou faixa)"
+              aria-describedby="url-hint"
+            />
+            <button id="clear-btn" class="url-input__clear" type="button" aria-label="Limpar link" hidden>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
 
-          <div class="settings-panel__body">
-            <!-- Web Notice -->
-            <div class="notice notice--info" id="web-notice" hidden>
-              <svg class="notice__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-              <div class="notice__content">
-                <strong>Processado no servidor:</strong> escolha o formato e a qualidade. Os arquivos ficam disponíveis por 3 minutos e depois são apagados.
-              </div>
-            </div>
+          <div class="url-input-wrapper" id="search-wrapper" hidden>
+            <span class="url-input__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+            </span>
+            <input
+              id="search-input"
+              class="url-input"
+              type="search"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Nome da música, artista ou álbum…"
+              aria-label="Buscar música, artista ou álbum"
+              aria-controls="search-panel"
+            />
+            <button id="search-clear" class="url-input__clear" type="button" aria-label="Limpar busca" hidden>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
 
-            <!-- Audio Format -->
-            <section class="settings-section" aria-labelledby="format-heading">
-              <h3 class="settings-section__title" id="format-heading">
-                <span class="settings-section__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                </span>
-                Formato de Áudio
-              </h3>
-              <div class="settings-section__desc">Escolha o formato de saída dos arquivos</div>
-              <div class="format-grid" id="format-grid" role="radiogroup" aria-label="Formato de áudio">
-                <!-- Options rendered by JS -->
-              </div>
-              <input type="hidden" id="format" name="format" value="m4a">
-            </section>
+          <div class="composer__actions">
+            <button id="paste-btn" class="btn btn--ghost" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              <span>Colar</span>
+            </button>
 
-            <!-- Quality -->
-            <section class="settings-section" aria-labelledby="quality-heading">
-              <h3 class="settings-section__title" id="quality-heading">
-                <span class="settings-section__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                </span>
-                Qualidade
-              </h3>
-              <div class="settings-section__desc">Bitrate do áudio final (kbps)</div>
-              <div class="quality-selector" id="quality-selector" role="radiogroup" aria-label="Qualidade de áudio">
-                <!-- Options rendered by JS -->
-              </div>
-              <input type="hidden" id="quality" name="quality" value="192">
-            </section>
+            <button id="download-btn" class="btn btn--primary" type="button">
+              <span class="btn__icon btn__icon--download" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </span>
+              <span class="btn__icon btn__icon--search" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+              </span>
+              <span class="btn__label" id="download-label">Iniciar</span>
+              <span class="btn__loader" aria-hidden="true" hidden>
+                <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4"/></svg>
+              </span>
+            </button>
 
-            <!-- Organization -->
-            <section class="settings-section" aria-labelledby="org-heading">
-              <h3 class="settings-section__title" id="org-heading">
-                <span class="settings-section__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="10" y1="19" x2="10" y2="9"/><line x1="14" y1="19" x2="14" y2="9"/><line x1="18" y1="19" x2="18" y2="9"/></svg>
-                </span>
-                Organização
-              </h3>
-              <label class="toggle" for="tracknum">
-                <input type="checkbox" id="tracknum" name="tracknum" />
-                <span class="toggle__track" aria-hidden="true"></span>
-                <span class="toggle__label">Numerar arquivos automaticamente</span>
-              </label>
-              <p class="settings-section__hint">Adiciona número da faixa no nome do arquivo (01, 02, 03...)</p>
-            </section>
-
-            <!-- Audio Signature -->
-            <section class="settings-section settings-section--bordered" aria-labelledby="wm-heading">
-              <h3 class="settings-section__title" id="wm-heading">
-                <span class="settings-section__icon" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
-                </span>
-                Assinatura de Áudio
-              </h3>
-              <div class="settings-section__desc">Adicione uma frase falada nas músicas com efeitos profissionais</div>
-
-              <label class="toggle toggle--large" for="wm-enabled">
-                <input type="checkbox" id="wm-enabled" name="wm-enabled" />
-                <span class="toggle__track" aria-hidden="true"></span>
-                <div class="toggle__label-group">
-                  <span class="toggle__label">Ativar assinatura de áudio</span>
-                  <span class="toggle__hint">Frase falada inserida na música</span>
-                </div>
-              </label>
-
-              <div class="wm-options" id="wm-options" hidden>
-                <!-- Watermark Note -->
-                <div class="notice notice--accent">
-                  <svg class="notice__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
-                  <div class="notice__content">
-                    <strong>Clique em "Ouvir exemplo"</strong> para testar a voz. Ela é grave, estilo locutor, e a música abaixa um pouco enquanto a assinatura toca — depois volta ao volume normal.
-                  </div>
-                </div>
-
-                <div class="wm-grid">
-                  <!-- Text -->
-                  <div class="wm-field wm-field--wide">
-                    <label for="wm-text" class="wm-field__label">Frase falada</label>
-                    <input type="text" id="wm-text" name="wm-text" class="wm-input" value="Lucas CDs" maxlength="40" placeholder="Sua assinatura..." />
-                  </div>
-
-                  <!-- Position -->
-                  <div class="wm-field">
-                    <label for="wm-position" class="wm-field__label">Ponto da música</label>
-                    <div class="wm-select">
-                      <select id="wm-position" name="wm-position" aria-label="Posição da assinatura">
-                        <option value="start">Início</option>
-                        <option value="middle" selected>Meio</option>
-                        <option value="end">Final</option>
-                      </select>
-                      <span class="wm-select__arrow" aria-hidden="true">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                      </span>
-                    </div>
-                  </div>
-
-                  <!-- Volume -->
-                  <div class="wm-field wm-field--wide">
-                    <label class="wm-field__label">
-                      Volume da assinatura: <span id="wm-volume-label" class="wm-volume-value">45%</span>
-                    </label>
-                    <input type="range" id="wm-volume" name="wm-volume" class="wm-slider" min="0" max="100" value="45" aria-label="Volume da assinatura" />
-                  </div>
-
-                  <!-- Repeat Every -->
-                  <div class="wm-field">
-                    <label for="wm-repeat-every" class="wm-field__label">Repetir a cada (segundos)</label>
-                    <input type="number" id="wm-repeat-every" name="wm-repeat-every" class="wm-input" min="0" step="1" value="0" placeholder="0 = uma vez" aria-label="Intervalo entre repetições em segundos" />
-                    <span class="wm-field__hint">0 = toca apenas uma vez</span>
-                  </div>
-
-                  <!-- Max Repeats -->
-                  <div class="wm-field">
-                    <label for="wm-repeat-count" class="wm-field__label">Máx. repetições</label>
-                    <input type="number" id="wm-repeat-count" name="wm-repeat-count" class="wm-input" min="0" step="1" value="0" placeholder="0 = ilimitado" aria-label="Número máximo de repetições" />
-                    <span class="wm-field__hint">0 = sem limite</span>
-                  </div>
-
-                  <!-- Voice Effects -->
-                  <div class="wm-field wm-field--wide">
-                    <label class="wm-field__label">Efeitos na voz</label>
-                    <div class="chip-group" role="group" aria-label="Efeitos de voz">
-                      <label class="chip">
-                        <input type="checkbox" id="wm-effect-echo" name="wm-effect-echo" value="echo" />
-                        <span class="chip__text">Eco</span>
-                      </label>
-                      <label class="chip">
-                        <input type="checkbox" id="wm-effect-reverb" name="wm-effect-reverb" value="reverb" />
-                        <span class="chip__text">Reverb</span>
-                      </label>
-                      <label class="chip">
-                        <input type="checkbox" id="wm-effect-deep" name="wm-effect-deep" value="deep" />
-                        <span class="chip__text">Voz grave</span>
-                      </label>
-                      <label class="chip">
-                        <input type="checkbox" id="wm-effect-radio" name="wm-effect-radio" value="radio" />
-                        <span class="chip__text">Estilo rádio</span>
-                      </label>
-                    </div>
-                  </div>
-
-                  <!-- Voice Selection + Preview -->
-                  <div class="wm-field wm-field--wide wm-voice-field">
-                    <label for="wm-voice" class="wm-field__label">Voz</label>
-                    <div class="wm-voice-wrapper">
-                      <div class="wm-select">
-                        <select id="wm-voice" name="wm-voice" aria-label="Tipo de voz">
-                          <option value="deep" selected>Grave (recomendado)</option>
-                          <option value="ultra">Muito grave</option>
-                          <option value="pt">Português (grave)</option>
-                        </select>
-                        <span class="wm-select__arrow" aria-hidden="true">
-                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-                        </span>
-                      </div>
-                      <button id="wm-preview" class="btn btn--ghost btn--preview" type="button" aria-label="Ouvir exemplo da voz">
-                        <svg class="btn__icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
-                        <svg class="btn__icon-stop" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
-                        <span class="btn__label" id="wm-preview-label">Ouvir exemplo</span>
-                        <span class="btn__loader" hidden><svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4"/></svg></span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
+            <button id="stop-btn" class="btn btn--danger" type="button" disabled>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+              Parar
+            </button>
           </div>
         </div>
-      </aside>
 
-      <!-- Tracks Panel (Collapsible on mobile) -->
-      <section class="tracks-panel" id="tracks-panel" aria-labelledby="tracks-heading">
-        <div class="tracks-panel__header">
-          <h2 class="tracks-panel__title" id="tracks-heading">
-            Músicas
-            <span class="count-badge" id="count-badge" hidden>0</span>
-          </h2>
-          <button class="tracks-panel__toggle" id="tracks-toggle" type="button" aria-label="Alternar lista de músicas" aria-expanded="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-          </button>
+        <p class="url-hint" id="url-hint" aria-live="polite">Cole um link de playlist, álbum ou faixa do Spotify</p>
+
+        <div class="url-tags" aria-hidden="true">
+          <span class="url-tag">Até 50 faixas</span>
+          <span class="url-tag">Sem login</span>
+          <span class="url-tag">3 min TTL</span>
+          <span class="url-tag">Gratuito</span>
         </div>
 
-        <div class="tracks-panel__body" id="tracks-body">
-          <div class="track-list" id="track-list" role="list" aria-live="polite">
-            <p class="track-list__empty" id="track-empty">
-              <svg class="track-list__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Nenhuma música ainda — insira um link e clique em Iniciar
+        <!-- Resultados da busca -->
+        <div class="search-panel" id="search-panel" hidden>
+          <div class="search-panel__head">
+            <span class="search-panel__status" id="search-status" aria-live="polite">Resultados</span>
+            <button class="icon-btn icon-btn--sm" id="search-close" type="button" aria-label="Fechar resultados">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="search-results" id="search-results" role="list"></div>
+          <p class="search-empty" id="search-empty" hidden></p>
+          <div class="search-recent" id="search-recent" hidden></div>
+        </div>
+      </section>
+
+      <!-- Meta -->
+      <div class="meta-card" id="meta-card" hidden>
+        <div class="meta-card__cover" id="meta-cover" aria-hidden="true"></div>
+        <div class="meta-card__info">
+          <p class="meta-card__type" id="meta-type">Playlist</p>
+          <p class="meta-card__name" id="meta-name"></p>
+          <p class="meta-card__count" id="meta-count"></p>
+        </div>
+        <span class="meta-card__tag">Pronto para baixar</span>
+      </div>
+
+      <!-- Progresso global -->
+      <div class="global-progress" id="global-progress" hidden role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso geral do download">
+        <div class="global-progress__top">
+          <span class="global-progress__label" id="global-progress-label" aria-live="polite"></span>
+          <span class="global-progress__value" id="global-progress-value">0%</span>
+        </div>
+        <div class="global-progress__track">
+          <div class="global-progress__fill" id="global-progress-fill"></div>
+        </div>
+      </div>
+
+      <!-- Workspace -->
+      <div class="workspace" id="workspace">
+        <div class="workspace__main">
+
+          <section class="panel tracks-panel" id="tracks-panel" aria-labelledby="tracks-heading">
+            <header class="panel__head">
+              <div>
+                <p class="panel__eyebrow">Fila</p>
+                <h2 class="panel__title" id="tracks-heading">
+                  Músicas
+                  <span class="count-badge" id="count-badge" hidden>0</span>
+                </h2>
+              </div>
+              <button class="icon-btn tracks-panel__toggle" id="tracks-toggle" type="button" aria-label="Alternar lista de músicas" aria-expanded="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+            </header>
+
+            <div class="panel__body tracks-panel__body" id="tracks-body">
+              <div class="track-list" id="track-list" role="list" aria-live="polite">
+                <div class="empty-state" id="track-empty">
+                  <span class="empty-state__icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                  </span>
+                  <p><strong>Nenhuma música ainda</strong></p>
+                  <p class="empty-state__hint">Cole um link ou busque pelo nome para começar.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel downloads-panel" id="downloads-panel" hidden aria-labelledby="downloads-heading">
+            <header class="panel__head">
+              <div>
+                <p class="panel__eyebrow">Prontos</p>
+                <h2 class="panel__title" id="downloads-heading">Seus arquivos</h2>
+              </div>
+              <a id="download-zip" class="btn btn--soft" download hidden>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Baixar tudo (.zip)</span>
+              </a>
+            </header>
+            <ul class="downloads-list" id="downloads-list" role="list"></ul>
+            <p class="panel__hint">Os arquivos ficam disponíveis por 3 minutos e depois são apagados automaticamente.</p>
+          </section>
+
+        </div>
+
+        <aside class="workspace__side">
+          <section class="panel mini-panel" id="how" aria-labelledby="how-title">
+            <p class="panel__eyebrow">Fluxo</p>
+            <h2 class="mini-panel__title" id="how-title">Como funciona</h2>
+            <ol class="steps">
+              <li>
+                <span class="steps__num">01</span>
+                <div><strong>Cole ou busque</strong><p>Link do Spotify ou nome da faixa, álbum ou playlist.</p></div>
+              </li>
+              <li>
+                <span class="steps__num">02</span>
+                <div><strong>Ajuste a sessão</strong><p>Formato, qualidade, numeração e assinatura falada.</p></div>
+              </li>
+              <li>
+                <span class="steps__num">03</span>
+                <div><strong>Baixe</strong><p>Faixas individuais ou o pacote .zip completo.</p></div>
+              </li>
+            </ol>
+          </section>
+
+          <section class="panel mini-panel mini-panel--accent" aria-labelledby="tip-title">
+            <p class="panel__eyebrow">Dica</p>
+            <h2 class="mini-panel__title" id="tip-title">Busca sem login</h2>
+            <p class="mini-panel__text">
+              Digite o nome e escolha o resultado. O catálogo é público —
+              você não precisa conectar conta nenhuma.
             </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Downloads Ready -->
-      <section class="downloads-panel" id="downloads-panel" hidden aria-labelledby="downloads-heading">
-        <div class="downloads-panel__header">
-          <h2 class="downloads-panel__title" id="downloads-heading">Seus arquivos</h2>
-          <button id="download-zip" class="btn btn--ghost" type="button" hidden>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Baixar tudo (.zip)</span>
-          </button>
-        </div>
-        <ul class="downloads-list" id="downloads-list" role="list"></ul>
-        <p class="downloads-panel__hint">Os arquivos ficam disponíveis por 3 minutos e depois são apagados automaticamente.</p>
-      </section>
-
-      <!-- How it works -->
-      <section class="howitworks" aria-labelledby="howitworks-heading">
-        <h2 class="howitworks__title" id="howitworks-heading">Como funciona</h2>
-        <ol class="howitworks__steps">
-          <li class="howitworks__step">
-            <span class="howitworks__number" aria-hidden="true">01</span>
-            <div class="howitworks__content">
-              <h3 class="howitworks__step-title">Cole o link</h3>
-              <p class="howitworks__step-desc">Insira o link de uma playlist, álbum ou faixa do Spotify</p>
-            </div>
-          </li>
-          <li class="howitworks__step">
-            <span class="howitworks__number" aria-hidden="true">02</span>
-            <div class="howitworks__content">
-              <h3 class="howitworks__step-title">Configure</h3>
-              <p class="howitworks__step-desc">Escolha formato, qualidade, assinatura e efeitos de voz</p>
-            </div>
-          </li>
-          <li class="howitworks__step">
-            <span class="howitworks__number" aria-hidden="true">03</span>
-            <div class="howitworks__content">
-              <h3 class="howitworks__step-title">Baixe</h3>
-              <p class="howitworks__step-desc">Receba as faixas individuais ou o arquivo ZIP completo</p>
-            </div>
-          </li>
-        </ol>
-      </section>
+            <a class="text-link" href="#composer" id="tip-search">Testar a busca
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </a>
+          </section>
+        </aside>
+      </div>
 
     </main>
 
-    <!-- Footer -->
     <footer class="footer" role="contentinfo">
-      <div class="footer__main">
-        <p class="footer__brand">
-          <span class="footer__logo" aria-hidden="true">
-            <svg viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="url(#footerGrad)"/><path d="M8 20h4v-8h-4zM14 20h4v-12h-4zM20 20h4v-4h-4zM26 20h4v-14h-4z" fill="#030806"/></svg>
-            <defs><linearGradient id="footerGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00ff88"/><stop offset="100%" stop-color="#00ccff"/></linearGradient></defs>
-          </span>
-          AudioFlow <span id="app-version"></span> — Desenvolvido por Lucas
-        </p>
-        <p class="footer__note">Uso pessoal · Arquivos expiram em 3 minutos</p>
+      <div class="footer__left">
+        <span class="footer__brand">AudioFlow <span id="app-version"></span></span>
+        <span class="footer__dot" aria-hidden="true">·</span>
+        <span>Desenvolvido por Lucas</span>
       </div>
-      <div class="footer__actions">
-        <button id="check-update-btn" class="footer__link" type="button">Verificar atualização</button>
+      <div class="footer__right">
+        <span class="footer__note">Uso pessoal · Arquivos expiram em 3 minutos</span>
+        <button id="check-update-btn" class="text-link" type="button">Verificar atualização</button>
       </div>
     </footer>
 
   </div>
 
-  <!-- Update Modal -->
+  <!-- Drawer de configurações -->
+  <aside class="settings-panel" id="settings-panel" role="complementary" aria-label="Configurações de áudio">
+    <div class="settings-panel__backdrop" id="settings-backdrop" aria-hidden="true"></div>
+    <div class="settings-panel__drawer" id="settings-drawer" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <header class="settings-panel__header">
+        <div>
+          <p class="panel__eyebrow">Sessão</p>
+          <h2 class="settings-panel__title" id="settings-title">Configurações</h2>
+        </div>
+        <button class="icon-btn" id="settings-close" type="button" aria-label="Fechar configurações">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </header>
+
+      <div class="settings-panel__body">
+
+        <div class="notice notice--info" id="web-notice" hidden>
+          <svg class="notice__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+          <div class="notice__content">
+            <strong>Processado no servidor:</strong> os arquivos ficam disponíveis por 3 minutos e depois são apagados.
+          </div>
+        </div>
+
+        <section class="settings-section" aria-labelledby="format-heading">
+          <h3 class="settings-section__title" id="format-heading">Formato de áudio</h3>
+          <p class="settings-section__desc">Escolha o formato de saída.</p>
+          <div class="format-grid" id="format-grid" role="radiogroup" aria-label="Formato de áudio"></div>
+          <input type="hidden" id="format" name="format" value="m4a">
+        </section>
+
+        <section class="settings-section" aria-labelledby="quality-heading">
+          <h3 class="settings-section__title" id="quality-heading">Qualidade</h3>
+          <p class="settings-section__desc">Bitrate do áudio final.</p>
+          <div class="quality-selector" id="quality-selector" role="radiogroup" aria-label="Qualidade de áudio"></div>
+          <input type="hidden" id="quality" name="quality" value="192">
+        </section>
+
+        <section class="settings-section" aria-labelledby="org-heading">
+          <h3 class="settings-section__title" id="org-heading">Organização</h3>
+          <label class="toggle" for="tracknum">
+            <input type="checkbox" id="tracknum" name="tracknum" />
+            <span class="toggle__track" aria-hidden="true"></span>
+            <span class="toggle__label">Numerar arquivos automaticamente</span>
+          </label>
+          <p class="settings-section__hint">Adiciona 01, 02, 03… no início do nome.</p>
+        </section>
+
+        <section class="settings-section" aria-labelledby="wm-heading">
+          <h3 class="settings-section__title" id="wm-heading">Assinatura de áudio</h3>
+          <p class="settings-section__desc">Uma frase falada inserida nas músicas, com ducking automático.</p>
+
+          <label class="toggle toggle--large" for="wm-enabled">
+            <input type="checkbox" id="wm-enabled" name="wm-enabled" />
+            <span class="toggle__track" aria-hidden="true"></span>
+            <div class="toggle__label-group">
+              <span class="toggle__label">Ativar assinatura</span>
+              <span class="toggle__hint">Frase falada na música</span>
+            </div>
+          </label>
+
+          <div class="wm-options" id="wm-options" hidden>
+            <div class="notice notice--accent">
+              <svg class="notice__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5 6 9H2v6h4l5 4z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+              <div class="notice__content">
+                <strong>Ouça antes:</strong> a voz é grave, estilo locutor, e a música abaixa enquanto a assinatura toca.
+              </div>
+            </div>
+
+            <div class="wm-grid">
+              <div class="wm-field wm-field--wide">
+                <label for="wm-text" class="wm-field__label">Frase falada</label>
+                <input type="text" id="wm-text" name="wm-text" class="wm-input" value="Lucas CDs" maxlength="40" placeholder="Sua assinatura…" />
+              </div>
+
+              <div class="wm-field">
+                <label for="wm-position" class="wm-field__label">Ponto da música</label>
+                <div class="wm-select">
+                  <select id="wm-position" name="wm-position" aria-label="Posição da assinatura">
+                    <option value="start">Início</option>
+                    <option value="middle" selected>Meio</option>
+                    <option value="end">Final</option>
+                  </select>
+                  <span class="wm-select__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </div>
+              </div>
+
+              <div class="wm-field wm-field--wide">
+                <label class="wm-field__label">Volume da assinatura: <span id="wm-volume-label" class="wm-volume-value">45%</span></label>
+                <input type="range" id="wm-volume" name="wm-volume" class="wm-slider" min="0" max="100" value="45" aria-label="Volume da assinatura" />
+              </div>
+
+              <div class="wm-field">
+                <label for="wm-repeat-every" class="wm-field__label">Repetir a cada (s)</label>
+                <input type="number" id="wm-repeat-every" name="wm-repeat-every" class="wm-input" min="0" step="1" value="0" placeholder="0 = uma vez" aria-label="Intervalo entre repetições em segundos" />
+                <span class="wm-field__hint">0 = toca apenas uma vez</span>
+              </div>
+
+              <div class="wm-field">
+                <label for="wm-repeat-count" class="wm-field__label">Máx. repetições</label>
+                <input type="number" id="wm-repeat-count" name="wm-repeat-count" class="wm-input" min="0" step="1" value="0" placeholder="0 = ilimitado" aria-label="Número máximo de repetições" />
+                <span class="wm-field__hint">0 = sem limite</span>
+              </div>
+
+              <div class="wm-field wm-field--wide">
+                <label class="wm-field__label">Efeitos na voz</label>
+                <div class="chip-group" role="group" aria-label="Efeitos de voz">
+                  <label class="chip"><input type="checkbox" id="wm-effect-echo" name="wm-effect-echo" value="echo" /><span class="chip__text">Eco</span></label>
+                  <label class="chip"><input type="checkbox" id="wm-effect-reverb" name="wm-effect-reverb" value="reverb" /><span class="chip__text">Reverb</span></label>
+                  <label class="chip"><input type="checkbox" id="wm-effect-deep" name="wm-effect-deep" value="deep" /><span class="chip__text">Voz grave</span></label>
+                  <label class="chip"><input type="checkbox" id="wm-effect-radio" name="wm-effect-radio" value="radio" /><span class="chip__text">Estilo rádio</span></label>
+                </div>
+              </div>
+
+              <div class="wm-field wm-field--wide">
+                <label for="wm-voice" class="wm-field__label">Voz</label>
+                <div class="wm-voice-wrapper">
+                  <div class="wm-select">
+                    <select id="wm-voice" name="wm-voice" aria-label="Tipo de voz">
+                      <option value="deep" selected>Grave (recomendado)</option>
+                      <option value="ultra">Muito grave</option>
+                      <option value="pt">Português (grave)</option>
+                    </select>
+                    <span class="wm-select__arrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+                  </div>
+                  <button id="wm-preview" class="btn btn--soft btn--preview" type="button" aria-label="Ouvir exemplo da voz">
+                    <svg class="btn__icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    <svg class="btn__icon-stop" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+                    <span class="btn__label" id="wm-preview-label">Ouvir exemplo</span>
+                    <span class="btn__loader" hidden><svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="10" stroke-dasharray="31.4 31.4"/></svg></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Modal de atualização -->
   <div class="modal-backdrop" id="update-modal" hidden role="dialog" aria-modal="true" aria-labelledby="update-modal-title" aria-describedby="update-modal-subtitle">
     <div class="modal">
       <div class="modal__header">
         <div class="modal__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         </div>
         <div>
           <h2 class="modal__title" id="update-modal-title">Nova versão disponível</h2>
@@ -511,14 +515,10 @@
       <div class="modal__body">
         <p class="update-size" id="update-size"></p>
         <div class="notes" id="update-notes" hidden></div>
-
         <div class="update-progress" id="update-progress" hidden>
-          <div class="update-progress__track">
-            <div class="update-progress__fill" id="update-progress-fill"></div>
-          </div>
+          <div class="update-progress__track"><div class="update-progress__fill" id="update-progress-fill"></div></div>
           <p class="update-progress__meta" id="update-progress-meta" aria-live="polite"></p>
         </div>
-
         <p class="modal__error" id="update-error" hidden></p>
       </div>
 
@@ -529,7 +529,6 @@
     </div>
   </div>
 
-  <!-- Toast Container -->
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="false"></div>
 
   <script src="config.js"></script>
