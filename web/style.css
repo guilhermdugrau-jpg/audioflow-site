@@ -1434,6 +1434,10 @@ body.is-busy .search-result__dl {
   display: none;
 }
 
+.tracks-panel__body {
+  display: block;
+}
+
 /* --- Track list -------------------------------------------- */
 .track-list {
   display: flex;

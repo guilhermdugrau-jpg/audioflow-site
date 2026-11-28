@@ -348,13 +348,12 @@
 
     <footer class="footer" role="contentinfo">
       <div class="footer__left">
-        <span class="footer__brand">AudioFlow <span id="app-version"></span></span>
+        <span class="footer__brand">AudioFlow</span>
         <span class="footer__dot" aria-hidden="true">·</span>
         <span>Desenvolvido por Lucas</span>
       </div>
       <div class="footer__right">
         <span class="footer__note">Uso pessoal · Arquivos expiram em 3 minutos</span>
-        <button id="check-update-btn" class="text-link" type="button">Verificar atualização</button>
       </div>
     </footer>
 
@@ -498,36 +497,6 @@
       </div>
     </div>
   </aside>
-
-  <!-- Modal de atualização -->
-  <div class="modal-backdrop" id="update-modal" hidden role="dialog" aria-modal="true" aria-labelledby="update-modal-title" aria-describedby="update-modal-subtitle">
-    <div class="modal">
-      <div class="modal__header">
-        <div class="modal__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </div>
-        <div>
-          <h2 class="modal__title" id="update-modal-title">Nova versão disponível</h2>
-          <p class="modal__subtitle" id="update-modal-subtitle"></p>
-        </div>
-      </div>
-
-      <div class="modal__body">
-        <p class="update-size" id="update-size"></p>
-        <div class="notes" id="update-notes" hidden></div>
-        <div class="update-progress" id="update-progress" hidden>
-          <div class="update-progress__track"><div class="update-progress__fill" id="update-progress-fill"></div></div>
-          <p class="update-progress__meta" id="update-progress-meta" aria-live="polite"></p>
-        </div>
-        <p class="modal__error" id="update-error" hidden></p>
-      </div>
-
-      <div class="modal__footer">
-        <button id="update-later-btn" class="btn btn--ghost" type="button">Mais tarde</button>
-        <button id="update-now-btn" class="btn btn--primary" type="button">Atualizar agora</button>
-      </div>
-    </div>
-  </div>
 
   <div class="toast-container" id="toast-container" aria-live="polite" aria-atomic="false"></div>
 

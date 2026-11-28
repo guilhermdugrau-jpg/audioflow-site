@@ -45,19 +45,6 @@ const el = {
   downloadsList: $("downloads-list"),
   downloadZip: $("download-zip"),
   toastContainer: $("toast-container"),
-  appVersion: $("app-version"),
-  checkUpdateBtn: $("check-update-btn"),
-  updateModal: $("update-modal"),
-  updateTitle: $("update-modal-title"),
-  updateSubtitle: $("update-modal-subtitle"),
-  updateSize: $("update-size"),
-  updateNotes: $("update-notes"),
-  updateError: $("update-error"),
-  updateProgress: $("update-progress"),
-  updateProgressFill: $("update-progress-fill"),
-  updateProgressMeta: $("update-progress-meta"),
-  updateLater: $("update-later-btn"),
-  updateNow: $("update-now-btn"),
   webNotice: $("web-notice"),
   wmEnabled: $("wm-enabled"),
   wmOptions: $("wm-options"),
@@ -1095,107 +1082,6 @@ function setMode(mode) {
   }
 }
 
-/* --- Update (desktop) -------------------------------------- */
-const Update = { info: null, state: "idle" };
-
-function updateModalOpen() { if (el.updateModal) el.updateModal.hidden = false; }
-function updateModalClose() { if (el.updateModal) el.updateModal.hidden = true; }
-
-function updateSetState(state) {
-  Update.state = state;
-  const downloading = state === "downloading";
-  const error = state === "error";
-  if (el.updateError) el.updateError.hidden = !error;
-  if (el.updateProgress) el.updateProgress.hidden = !downloading;
-  if (el.updateNotes) el.updateNotes.hidden = !(state === "available" || state === "ready");
-  if (el.updateLater) {
-    el.updateLater.disabled = downloading;
-    el.updateLater.hidden = downloading;
-  }
-  if (el.updateNow) {
-    el.updateNow.hidden = false;
-    el.updateNow.disabled = false;
-  }
-  if (state === "available") {
-    if (el.updateTitle) el.updateTitle.textContent = "Nova versão disponível";
-    if (el.updateNow) el.updateNow.textContent = "Atualizar agora";
-  } else if (state === "downloading") {
-    if (el.updateTitle) el.updateTitle.textContent = "Baixando atualização…";
-    if (el.updateNow) el.updateNow.hidden = true;
-  } else if (state === "ready") {
-    if (el.updateTitle) el.updateTitle.textContent = "Atualização pronta";
-    if (el.updateNow) el.updateNow.textContent = "Instalar e reiniciar";
-  } else if (state === "error") {
-    if (el.updateTitle) el.updateTitle.textContent = "Falha na atualização";
-    if (el.updateNow) el.updateNow.textContent = "Tentar novamente";
-  }
-}
-
-function updateShowInfo(info) {
-  Update.info = info;
-  if (el.updateSubtitle) {
-    el.updateSubtitle.textContent = "AudioFlow " + (info.current || "v?") + " → " + info.version;
-  }
-  const size = fmtBytes(info.size);
-  if (el.updateSize) {
-    el.updateSize.textContent = size
-      ? "Tamanho do download: " + size + ". Notas da versão:"
-      : "Notas da versão:";
-  }
-  if (info.notes && el.updateNotes) {
-    el.updateNotes.hidden = false;
-    el.updateNotes.textContent = info.notes;
-  } else if (el.updateNotes) {
-    el.updateNotes.hidden = true;
-  }
-  updateSetState("available");
-  updateModalOpen();
-}
-
-function updateSetError(message) {
-  if (el.updateError) el.updateError.textContent = message || "Não foi possível atualizar agora.";
-  updateSetState("error");
-}
-
-function updateSetProgress(percent, downloaded, total, speed) {
-  if (el.updateProgressFill) {
-    el.updateProgressFill.style.width = Math.max(0, Math.min(100, percent)) + "%";
-  }
-  const base = fmtBytes(downloaded) + " de " + fmtBytes(total);
-  if (el.updateProgressMeta) {
-    el.updateProgressMeta.textContent = speed ? base + " · " + fmtSpeed(speed) : base;
-  }
-}
-
-async function updateStartDownload() {
-  updateSetState("downloading");
-  if (el.updateProgressFill) el.updateProgressFill.style.width = "0%";
-  if (el.updateProgressMeta) el.updateProgressMeta.textContent = "Conectando…";
-  try { await callApi("download_update"); }
-  catch (error) { updateSetError((error && error.message) || "Não foi possível baixar a atualização."); }
-}
-
-async function updateInstall() {
-  try {
-    await callApi("install_update");
-    if (el.updateTitle) el.updateTitle.textContent = "Aplicando atualização…";
-    if (el.updateNow) el.updateNow.disabled = true;
-    if (el.updateLater) el.updateLater.disabled = true;
-    toast("info", "Aplicando atualização… o app vai reiniciar.");
-  } catch (error) {
-    updateSetError((error && error.message) || "Não foi possível aplicar a atualização.");
-  }
-}
-
-function updateHandleEvent(payload) {
-  switch (payload.type) {
-    case "update_available": updateShowInfo(payload); break;
-    case "update_download_progress": updateSetProgress(payload.percent, payload.downloaded, payload.total, payload.speed); break;
-    case "update_download_done": updateSetState("ready"); break;
-    case "update_download_error": updateSetError(payload.message); break;
-  }
-}
-
 /* --- Assinatura de áudio ----------------------------------- */
 function wmEffects() {
   const effects = [];
@@ -1404,8 +1290,6 @@ window.audioflow_event = function (payload) {
       toast("error", payload.message || "Ocorreu um erro.");
       break;
   }
-
-  updateHandleEvent(payload);
 };
 
 /* --- Configuração ------------------------------------------ */
@@ -1424,7 +1308,6 @@ function scheduleSave() {
 }
 
 function applyAndroidConfig() {
-  if (el.checkUpdateBtn) el.checkUpdateBtn.hidden = true;
   const wmSection = el.wmEnabled ? el.wmEnabled.closest(".settings-section") : null;
   if (wmSection) wmSection.hidden = true;
   if (el.wmOptions) el.wmOptions.hidden = true;
@@ -1475,11 +1358,6 @@ async function loadConfig() {
       else if (config.platform === "web") applyWebConfig(config);
       if (config.watermark) wmApplyConfig(config.watermark);
       updateSummary();
-    }
-    const version = await callApiTimeout("get_app_version", 3000);
-    if (version && el.appVersion) {
-      el.appVersion.textContent = version;
-      window.__versionSet = true;
     }
   } catch {
     /* configuração é opcional; a UI já está pronta */
@@ -1697,33 +1575,6 @@ if (el.tracknum) {
   el.tracknum.addEventListener("change", () => {
     updateSummary();
     scheduleSave();
-  });
-}
-
-/* update modal */
-if (el.updateNow) {
-  el.updateNow.addEventListener("click", () => {
-    if (Update.state === "downloading") return;
-    if (Update.state === "ready") { updateInstall(); return; }
-    if (Update.state === "error" || Update.state === "available") { updateStartDownload(); }
-  });
-}
-if (el.updateLater) {
-  el.updateLater.addEventListener("click", () => {
-    if (Update.state === "downloading") return;
-    callApi("dismiss_update", Update.info).catch(() => {});
-    updateModalClose();
-  });
-}
-if (el.checkUpdateBtn) {
-  el.checkUpdateBtn.addEventListener("click", () => {
-    toast("info", "Verificando atualizações…");
-    callApi("check_update_async").catch(() => {});
-  });
-}
-if (el.updateModal) {
-  el.updateModal.addEventListener("click", (event) => {
-    if (event.target === el.updateModal) updateModalClose();
   });
 }
 
